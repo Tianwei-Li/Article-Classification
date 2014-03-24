@@ -30,20 +30,26 @@ def featurize(train_articles, test_articles):
     return (make_features(train_articles), make_features(test_articles))
 
 def articles_to_features(train_in_name, train_out_name, test_in_name, test_out_name):
-    with open(train_in_name, 'r') as in_file:
-        train_lines = in_file.readlines()
-    with open(test_in_name, 'r') as in_file:
-        test_lines = in_file.readlines()
-
-    train_features, test_features = featurize(train_lines, test_lines)
-
-    for features, out_name in ((train_features, train_out_name),
-                               (test_features, test_out_name)):
-        with open(out_name, 'wb') as csvfile:
-            # Output features in MATLAB-readable CSV format
-            for row in features:
-                csvfile.write(', '.join([str(feature) for feature in row]))
-                csvfile.write('\n')
+    stopword_file = open("stopwords.txt", 'r')
+    #for line in stopword_file:
+    content = stopword_file.read().strip()
+    stop_words = content.split('\n')
+    print('tttt')
+    
+#    with open(train_in_name, 'r') as in_file:
+#        train_lines = in_file.readlines()
+#    with open(test_in_name, 'r') as in_file:
+#        test_lines = in_file.readlines()
+#
+#    train_features, test_features = featurize(train_lines, test_lines)
+#
+#    for features, out_name in ((train_features, train_out_name),
+#                               (test_features, test_out_name)):
+#        with open(out_name, 'wb') as csvfile:
+#            # Output features in MATLAB-readable CSV format
+#            for row in features:
+#                csvfile.write(', '.join([str(feature) for feature in row]))
+#                csvfile.write('\n')
 
 if __name__ == '__main__':
     articles_to_features(*sys.argv[1:5])
