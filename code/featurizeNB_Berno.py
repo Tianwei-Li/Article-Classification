@@ -71,7 +71,7 @@ def featurize(train_articles, test_articles):
     trainFeatures = []
     for words in wordMatrix:
         for word in words:
-            if word in wordDic: wordDic[word] += 1
+            if word in wordDic: wordDic[word] = 1
         trainFeatures.append(wordDic.values())
         # clear the dictionary
         for k in wordDic.keys() : wordDic[k] = 0
@@ -83,7 +83,7 @@ def featurize(train_articles, test_articles):
         words = article.strip().split()
         words = filtStopWords(words, stopWordSet)
         for word in words:
-            if word in wordDic: wordDic[word] += 1
+            if word in wordDic: wordDic[word] = 1
         testFeatures.append(wordDic.values())
         # clear the dictionary
         for k in wordDic.keys() : wordDic[k] = 0
