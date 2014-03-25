@@ -2,6 +2,7 @@
 
 import sys
 from sets import Set
+from collections import OrderedDict
 
 def filtStopWords(wordsOrg, stopWordSet):
     words = []
@@ -41,22 +42,36 @@ def featurize(train_articles, test_articles):
     stopWordSet = Set(stop_words)
 
     # create dictionary
-    wordDic = {}
+    wordDic1 = {}
     wordMatrix = []
     for article in train_articles:
         words = article.strip().split()
         words = filtStopWords(words, stopWordSet)
         wordMatrix.append(words)
         for word in words:
-            if word not in wordDic:
-                wordDic[word] = 0
+            if word not in wordDic1:
+                wordDic1[word] = 1
+            else:
+                wordDic1[word] += 1
 
+
+    # feature reduction, based on the frequency of words
+    wordDic1 = sorted(wordDic1.items(), key=lambda t: t[1], reverse = True)
+    wordDicLen = 1000
+    wordDic = {}
+    idx = 0
+    for item in wordDic1:
+        wordDic[item[0]] = 0
+        idx += 1
+        if idx == wordDicLen:
+            break
+    
 
     # generate word count for train articles
     trainFeatures = []
     for words in wordMatrix:
         for word in words:
-            wordDic[word] += 1
+            if word in wordDic: wordDic[word] += 1
         trainFeatures.append(wordDic.values())
         # clear the dictionary
         for k in wordDic.keys() : wordDic[k] = 0
