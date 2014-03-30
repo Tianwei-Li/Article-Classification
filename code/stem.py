@@ -18,6 +18,7 @@
 ## do i need to check more boundary conditions on the words (i.e. indexErrors)
 
 import re
+import sys
 from string import lower
 
 
@@ -375,7 +376,24 @@ def stem(parms):
 
     return stems
 
+def stemmingDocument(train_data_name, data_out_name):
+    with open(train_data_name, 'r') as in_file:
+        document_lines = in_file.readlines()
+    
+    with open(data_out_name, 'wb') as out_file:
+        for document_line in document_lines:
+            stem_document = stem(document_line)
+            for n,i in enumerate(stem_document):
+               if i=='':
+                   stem_document[n]=' '
+            string_document = ''.join(stem_document)
+            
+            out_file.write("%s\n" % string_document)
+            
+        
 
+if __name__ == '__main__':
+    stemmingDocument(*sys.argv[1:3])
 
 
 
