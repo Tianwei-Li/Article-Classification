@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import division, unicode_literals
 import sys
 from sets import Set
 from collections import OrderedDict
