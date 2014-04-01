@@ -18,6 +18,7 @@
 ## do i need to check more boundary conditions on the words (i.e. indexErrors)
 
 import re
+from sets import Set 
 import sys
 from string import lower
 
@@ -376,22 +377,42 @@ def stem(parms):
 
     return stems
 
+def filtStopWords(wordsOrg, stopWordSet):
+    words = []
+    for word in wordsOrg:
+        if word not in stopWordSet:
+            words.append(word)
+    
+    return words
+
 def stemmingDocument(train_data_name, data_out_name):
+    wordset = Set()
     with open(train_data_name, 'r') as in_file:
         document_lines = in_file.readlines()
     
+    # generate the stop words hash set and delete stop words
+    stopword_file = open("stopwords.txt", 'r')
+    content = stopword_file.read().strip()
+    stop_words = content.split('\n')
+    stopWordSet = Set(stop_words)
+    
+    train_filter_data = []
+    for article in document_lines:
+        words = article.strip().split()
+        words = filtStopWords(words, stopWordSet)
+        train_filter_data.append(words)
+    
     with open(data_out_name, 'wb') as out_file:
-        for document_line in document_lines:
+        for document_line in train_filter_data:
+            #document_list = document_line.split(' ')
             stem_document = stem(document_line)
-            for n,i in enumerate(stem_document):
-               if i=='':
-                   stem_document[n]=' '
-            string_document = ''.join(stem_document)
+            for word in stem_document:
+                wordset.add(word)
+            string_document = ' '.join(stem_document)
             
             out_file.write("%s\n" % string_document)
-            
+    print len(wordset)
         
-
 if __name__ == '__main__':
     stemmingDocument(*sys.argv[1:3])
 

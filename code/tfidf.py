@@ -80,7 +80,7 @@ def test(train_data_name, train_label_name):
                          
     #bloblist = [document1, document2, document3]
     scores = {word: tfidf(bloblist_0, word, wholeblob, bloblist) for word in wholeblob}
-    sorted_words = sorted(scores.items(), key=lambda x: x[1], reverse = True)
+    #sorted_words = sorted(scores.items(), key=lambda x: x[1], reverse = True)
     for word, score in sorted_words[:100]:
         print("Word: {}, TF-IDF: {}".format(word, round(score, 5)))
     
