@@ -45,10 +45,27 @@ def calculate_wordcount(worddic, train_filter_data):
             worddic[word] = worddic[word] + 1   
     return worddic 
     
-def generateTestFeature(test_data_name, test_feature_name):
+def generateTestFeature(test_data_name):
     
+    with open(test_data_name, 'r') as infile:
+        test_lines = infile.readlines()
+    
+    # generate the stop words hash set and delete stop words
+    stopword_file = open("stopwords.txt", 'r')
+    content = stopword_file.read().strip()
+    stop_words = content.split('\n')
+    stopWordSet = Set(stop_words)
+    
+    test_filter_data = []
+    for i, article in enumerate(test_lines):
+        words = article.strip().split()
+        words = filtStopWords(words, stopWordSet)
+        test_filter_data.append(words)
+    
+    return test_filter_data
+        
 
-def test(train_data_name, train_label_name,label_0_score, label_1_score, label_2_score, label_3_score, test_article):
+def test(test_data_name, test_feature_name, train_data_name, train_label_name,label_0_score, label_1_score, label_2_score, label_3_score):
     with open(train_data_name, 'r') as in_file:
         train_data_lines = in_file.readlines()
     
@@ -57,6 +74,8 @@ def test(train_data_name, train_label_name,label_0_score, label_1_score, label_2
     worddic_1 = {}
     worddic_2 = {}
     worddic_3 = {}
+    
+    test_worddic = {}
     
     wordset = set()
     # Get the label list index of 0,1,2,3
@@ -100,6 +119,27 @@ def test(train_data_name, train_label_name,label_0_score, label_1_score, label_2
         worddic_2[word] = 0
         worddic_3[word] = 0
         
+        test_worddic[word] = 0
+    #=================================================================
+    
+    test_data = generateTestFeature(test_data_name)
+    
+    with open (test_feature_name, 'wb') as csvfile:
+        
+        for line in test_data:
+            for word in line:
+                if word in wordset:
+                    test_worddic[word] += 1
+        
+        for word, count in test_worddic.items():
+            csvfile.write(str(count) + " ")
+        csvfile.write('\n')
+        
+        for word, count in test_worddic.items():
+            test_worddic[word] = 0
+    
+    #==================================================================
+    
     
     worddic = calculate_wordcount(worddic, train_filter_data)   
     worddic_0 = calculate_wordcount(worddic_0, train_filter_data_0) 
@@ -167,16 +207,11 @@ def test(train_data_name, train_label_name,label_0_score, label_1_score, label_2
     with open(label_3_score, 'wb') as csvfile:
         for word, score in scores_0.items():
             csvfile.write(str(score) + " ")
-            
-    
-    # generate word count for test articles
-    with open(test_article, 'r') as infile:
-        test_lines = infile.readlines()
     
     
             
 if __name__ == '__main__':
-    test(*sys.argv[1:8])
+    test(*sys.argv[1:9])
     
     
     
