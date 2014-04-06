@@ -44,16 +44,16 @@ for j = 0 : nClass-1
     condProb(j+1, :) = condProb(j+1, :) ./ totalCnt;
 end
 
-% % remove noise features
-% scales = floor(log10(condProb));
-% % find max and min scales for each feature
-% maxP = max(scales,[],1);
-% minP = min(scales,[],1);
-% [row, col] = find(maxP ~= minP);
+ % remove noise features
+ scales = floor(log10(condProb));
+ % find max and min scales for each feature
+ maxP = max(scales,[],1);
+ minP = min(scales,[],1);
+ [row, col] = find(maxP ~= minP);
 
-maxP = max(condProb,[],1);
-minP = min(condProb,[],1);
-[row, col] = find(maxP - minP > 0.001);
+%maxP = max(condProb,[],1);
+%minP = min(condProb,[],1);
+%[row, col] = find(maxP - minP > 0.001);
 
 XTest = XTest(:, col);
 condProb = condProb(:, col);

@@ -1,4 +1,4 @@
-chinese beijing chinese
-chinese chinese shanghai
-chinese macao
-tokyo japan chinese
+c, chinese beijing chinese
+c, chinese chinese shanghai
+c, chinese macao
+t, tokyo japan chinese
