@@ -131,12 +131,12 @@ def test(test_data_name, test_feature_name, train_data_name, train_label_name,la
                 if word in wordset:
                     test_worddic[word] += 1
         
-        for word, count in test_worddic.items():
-            csvfile.write(str(count) + " ")
-        csvfile.write('\n')
+            for word, count in test_worddic.items():
+                csvfile.write(str(count) + " ")
+            csvfile.write('\n')
         
-        for word, count in test_worddic.items():
-            test_worddic[word] = 0
+            for word, count in test_worddic.items():
+                test_worddic[word] = 0
     
     #==================================================================
     
