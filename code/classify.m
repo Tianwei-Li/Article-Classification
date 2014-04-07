@@ -8,6 +8,11 @@ XTrain = csvread(XTrain_fName);
 XTest = csvread(XTest_fName);
 yTrain = csvread(yTrain_fName);
 
+%test_train_inst = rand(5, 10);
+%test_train_label = [1;1;1;-1;-1];
+%model = svmtrain(test_train_label, test_train_inst, '-c 1 -g 0.07');
+%[predict_label, accuracy, dec_values] = svmpredict(test_train_label, test_train_inst, model);
+
 
 % get the prior probability for each class
 probs = prior(yTrain);
@@ -44,19 +49,28 @@ for j = 0 : nClass-1
     condProb(j+1, :) = condProb(j+1, :) ./ totalCnt;
 end
 
- % remove noise features
- scales = floor(log10(condProb));
- % find max and min scales for each feature
- maxP = max(scales,[],1);
- minP = min(scales,[],1);
- [row, col] = find(maxP ~= minP);
+% % remove noise features
+% scales = floor(log10(condProb));
+% % find max and min scales for each feature
+% maxP = max(scales,[],1);
+% minP = min(scales,[],1);
+% [row, col] = find(maxP ~= minP);
+%
+%
+%XTest = XTest(:, col);
+%condProb = condProb(:, col);
+end
 
-%maxP = max(condProb,[],1);
-%minP = min(condProb,[],1);
-%[row, col] = find(maxP - minP > 0.001);
 
-XTest = XTest(:, col);
-condProb = condProb(:, col);
+function [ probs ] = prior( y )
+
+% get the prior probability for each class
+% input y is the vector of the training labels
+% output the probability of each class
+[row, col] = size(y);
+count = hist(y, unique(y));
+probs = count.'/row;
+
 end
 
 
