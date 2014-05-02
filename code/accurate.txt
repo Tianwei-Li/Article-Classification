@@ -1,0 +1,9 @@
+    name        feature number      accurate
+
+NB with stem        25313           64.5%
+
+NB                  38800           67.5%
+
+NB with tf-idf                      66%
+
+NB with PCA         
