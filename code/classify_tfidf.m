@@ -73,25 +73,23 @@ scores = tf .* log(N * M_term ./ repmat(N_term, nClass, 1));
 end
 
 
-function [scores] = tfidf2(XTrain, XTest, nClass)
+function [scores] = tfidf2(XTrain, XTest)
 
 % idf (term) = log ( N / N_term )
 
 [N, nFeat] = size(XTrain);
 
-tf = zeros(nClass, nFeat);
+tf = zeros(1, nFeat);
 
 XCount = XTrain > 0;
 N_term = sum(XCount, 1);
 
-for j = 0 : nClass-1
-    % calculate the tf
-    totalCnt = sum(XTrain(:)) + nFeat;  % total word count, add 1 smooth
-    tf(j+1, :) = sum(XTrain, 1) + 1;
-    tf(j+1, :) = tf(j+1, :) ./ totalCnt;
-end
+% calculate the tf
+totalCnt = sum(XTrain(:)); 
+tf = sum(XTrain, 1);
+tf = tf ./ totalCnt;
 
-scores = tf .* log(N ./ repmat(N_term, nClass, 1));
+scores = tf .* log(N ./ N_term);
 
 
 end
