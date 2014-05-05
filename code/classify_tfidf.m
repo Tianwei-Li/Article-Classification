@@ -15,6 +15,11 @@ nClass = size(probs, 1);
 
 [scores] = tfidf(XTrain, yTrain, XTest, nClass);
 
+temp = sum(scores, 2);
+nFeat = size(scores, 2);
+temp2 = repmat(temp, 1, nFeat);
+scores = scores ./ temp2;
+
 % classify
 nTest = size(XTest, 1);
 c = zeros(nTest, 1);

@@ -2,8 +2,15 @@
 
 NB with stem        25313           64.5%
 
-NB                  38800           67.5%
+NB                  38800           66.8%
 
 NB with tf-idf                      66%
+
+CNB                                 66.7%
+
+CWNB                                
+
+TWCNB                               
+
 
 NB with PCA         
