@@ -1,4 +1,4 @@
-function [c] = classify_tfidf(XTrain_fName, yTrain_fName, XTest_fName)
+function [c] = classify_TCNB(XTrain_fName, yTrain_fName, XTest_fName)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -8,17 +8,17 @@ XTrain = csvread(XTrain_fName);
 XTest = csvread(XTest_fName);
 yTrain = csvread(yTrain_fName);
 
+%test_train_inst = rand(5, 10);
+%test_train_label = [1;1;1;-1;-1];
+%model = svmtrain(test_train_label, test_train_inst, '-c 1 -g 0.07');
+%[predict_label, accuracy, dec_values] = svmpredict(test_train_label, test_train_inst, model);
+
 
 % get the prior probability for each class
 probs = prior(yTrain);
 nClass = size(probs, 1);
 
 [scores] = tfidf(XTrain, yTrain, XTest, nClass);
-
-temp = sum(scores, 2);
-nFeat = size(scores, 2);
-temp2 = repmat(temp, 1, nFeat);
-scores = scores ./ temp2;
 
 % classify
 nTest = size(XTest, 1);
@@ -27,7 +27,10 @@ c = zeros(nTest, 1);
 for i = 1 : nTest
     bayes = zeros(1, nClass);
     for j = 1 : nClass
-        bayes(j) = sum(XTest(i, :) .* log(scores(j,:))) + log(probs(j));
+        %temp = log(condProb(j,:));
+        %temp_sum = sum(abs(temp));
+        %temp = temp ./ temp_sum;
+        bayes(j) = -sum(XTest(i, :) .* log(scores(j,:))) + log(probs(j));
     end
     [maxP, idx] = max(bayes);
     c(i,1) = idx - 1;
@@ -35,6 +38,9 @@ for i = 1 : nTest
 end
 
 end
+
+
+
 
 function [scores] = tfidf(XTrain, yTrain, XTest, nClass)
 % train the classifier
@@ -53,7 +59,7 @@ N_term = sum(XCount, 1);
 
 for j = 0 : nClass-1
     % calculate the tf for each label
-    [r, c] = find(yTrain == j);
+    [r, c] = find(yTrain ~= j);
     tempX = XTrain(r,:);
     tempXCount = XCount(r, :);
     
@@ -71,29 +77,6 @@ scores = tf .* log(N * M_term ./ repmat(N_term, nClass, 1));
 
 
 end
-
-
-function [scores] = tfidf2(XTrain)
-
-% idf (term) = log ( N / N_term )
-
-[N, nFeat] = size(XTrain);
-
-tf = zeros(1, nFeat);
-
-XCount = XTrain > 0;
-N_term = sum(XCount, 1);
-
-% calculate the tf
-totalCnt = sum(XTrain(:)); 
-tf = sum(XTrain, 1);
-tf = tf ./ totalCnt;
-
-scores = tf .* log(N ./ N_term);
-
-
-end
-
 
 function [ probs ] = prior( y )
 
